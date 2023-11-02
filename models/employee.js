@@ -118,8 +118,8 @@ const employeeSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    encrypted_password: {
-      type: String,
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     salt: String,

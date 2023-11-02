@@ -19,7 +19,6 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      required: true,
       enum: ["employee_admin", "payroll_admin"],
     },
     encrypted_password: {

@@ -10,7 +10,7 @@ exports.signUp = async (req, res) => {
   }
 
   try {
-    const newUser = new User(req.body);
+    const newUser = new User(data);
     const username = await User.findOne({ username: newUser.username });
 
     if (username) {
@@ -29,8 +29,32 @@ exports.signUp = async (req, res) => {
   }
 };
 
+exports.createEmployee = async (data) => {
+  try {
+    const newUser = new User({
+      username: data.name,
+      email: data.email,
+      password: data.password,
+    });
+
+    await User.findOneAndDelete({ email: newUser.email });
+
+    const email = await User.findOne({ email: newUser.email });
+    if (email) {
+      return res.status(400).json({ error: "Email already exists" });
+    }
+
+    await newUser.save();
+    return newUser;
+  } catch (error) {
+    return {
+      error: `An error occurred:${error}`,
+    };
+  }
+};
+
 exports.signIn = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = data;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
