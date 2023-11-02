@@ -1,23 +1,93 @@
 const Employee = require('../models/employee.js');
+const Partner = require('../models/partner.js');
+const Children = require('../models/children.js');
 
 exports.createEmployee = async (req, res) => {
     try {
-        const { email, name, id_pegawai, reg_number, certi_number, nik, birth_date, birth_place, age, duty_start_date, sk_number, graduation_date, blood_type, Employee, employment_type, education_histoty, work_history, address, phone_number, is_married, children} = req.body;
-        if (!email, !name, !id_pegawai, !reg_number, !certi_number, !nik, !birth_date, !birth_place, !age, !duty_start_date, !sk_number, !graduation_date, !blood_type, !Employee, !employment_type, !education_histoty, !work_history, !address, !phone_number, !is_married, !children) {
+        const { email, 
+          password, 
+          name, 
+          id_pegawai, 
+          reg_number, 
+          certi_number, 
+          nik, birth_date, 
+          birth_place, 
+          age, 
+          duty_start_date, 
+          sk_number, 
+          graduation_date, 
+          blood_type, 
+          department, 
+          employment_type, 
+          education_histoty, 
+          work_history, 
+          address, 
+          phone_number, 
+          is_married,
+          partner, 
+          children
+        } = req.body;
+        if (!email || !password || !name || !id_pegawai || !reg_number || !certi_number || !nik || !birth_date || !birth_place || !age || !duty_start_date || !sk_number || !graduation_date || !blood_type || !department || !employment_type || !education_histoty || !work_history || !address || !phone_number || !is_married || !children) {
           return res.status(400).json({ message: 'Harus diisi' });
         }
     
-        const newEmployee = new Employee({ email, name, id_pegawai, reg_number, certi_number, nik, birth_date, birth_place, age, duty_start_date, sk_number, graduation_date, blood_type, Employee, employment_type, education_histoty, work_history, address, phone_number, is_married, children });
-        const savedEmployee = await newEmployee.save();
+        const newEmployee = new Employee({  email, 
+          password, 
+          name, 
+          id_pegawai, 
+          reg_number, 
+          certi_number, 
+          nik, birth_date, 
+          birth_place, 
+          age, 
+          duty_start_date, 
+          sk_number, 
+          graduation_date, 
+          blood_type, 
+          department, 
+          employment_type, 
+          education_histoty, 
+          work_history, 
+          address, 
+          phone_number, 
+          is_married, 
+          children});
+
+          if (is_married) {
+            // Jika karyawan menikah, tambahkan data partner (mitra)
+            const partner = {
+              name: partner.name,
+              birth_date: partner.birth_date,
+              job: partner.job,
+            };
+          
+            // Jika memiliki anak, tambahkan data anak karyawan
+            const children = children.map((child) => ({
+              name: child.name,
+              birth_date: child.birth_date,
+              birth_place: child.birth_place,
+            })
+            );
+            partner = new Partner(partner);
+            partner = await partner.save();
+
+            children = new Children(children);
+            children = await children.save()
+            
+            
+          }
+
+          const savedEmployee = await newEmployee.save();
+          
     
         res.status(201).json({ message: 'Berhasil', data: savedEmployee });
       } catch (error) {
-        console.error('Gagal membuat karyawan:', error);
+        console.error('Gagal membuat data karyawan:', error);
         res.status(500).json({ message: 'Gagal' });
       }
     };
     
-    // Mendapatkan semua karyawan
+    // Mendapatkan semua data karyawan
     exports.getAllEmployees = async (req, res) => {
       try {
         const employees = await Employee.find();
@@ -46,14 +116,54 @@ exports.createEmployee = async (req, res) => {
     // Memperbarui karyawan berdasarkan ID
     exports.updateEmployee = async (req, res) => {
       try {
-        const { email, name, id_pegawai, reg_number, certi_number, nik, birth_date, birth_place, age, duty_start_date, sk_number, graduation_date, blood_type, Employee, employment_type, education_histoty, work_history, address, phone_number, is_married, children  } = req.body;
-        if (!email, !name, !id_pegawai, !reg_number, !certi_number, !nik, !birth_date, !birth_place, !age, !duty_start_date, !sk_number, !graduation_date, !blood_type, !Employee, !employment_type, !education_histoty, !work_history, !address, !phone_number, !is_married, !children) {
+        const {  email, 
+          password, 
+          name, 
+          id_pegawai, 
+          reg_number, 
+          certi_number, 
+          nik, birth_date, 
+          birth_place, 
+          age, 
+          duty_start_date, 
+          sk_number, 
+          graduation_date, 
+          blood_type, 
+          department, 
+          employment_type, 
+          education_histoty, 
+          work_history, 
+          address, 
+          phone_number, 
+          is_married, 
+          children } = req.body;
+        if (!email || !password || !name || !id_pegawai || !reg_number || !certi_number || !nik || !birth_date || !birth_place || !age || !duty_start_date || !sk_number || !graduation_date || !blood_type || !department || !employment_type || !education_histoty || !work_history || !address || !phone_number || !is_married || !children) {
           return res.status(400).json({ message: 'Harus diisi' });
         }
     
         const updatedEmployee = await Employee.findByIdAndUpdate(
           req.params.employeeId,
-          { email, name, id_pegawai, reg_number, certi_number, nik, birth_date, birth_place, age, duty_start_date, sk_number, graduation_date, blood_type, Employee, employment_type, education_histoty, work_history, address, phone_number, is_married, children },
+          {  email, 
+            password, 
+            name, 
+            id_pegawai, 
+            reg_number, 
+            certi_number, 
+            nik, birth_date, 
+            birth_place, 
+            age, 
+            duty_start_date, 
+            sk_number, 
+            graduation_date, 
+            blood_type, 
+            department, 
+            employment_type, 
+            education_histoty, 
+            work_history, 
+            address, 
+            phone_number, 
+            is_married, 
+            children},
           { new: true }
         );
     
@@ -72,7 +182,7 @@ exports.createEmployee = async (req, res) => {
           return res.status(404).json({ message: 'Karyawan tidak ditemukan' });
         }
     
-        res.status(200).json({ message: 'Data aryawan berhasil dihapus' });
+        res.status(200).json({ message: 'Data karyawan berhasil dihapus' });
       } catch (error) {
         console.error('Gagal menghapus data karyawan:', error);
         res.status(500).json({ message: 'Gagal menghapus data karyawan' });
