@@ -8,7 +8,9 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
 mongoose
-  .connect(process.env.DB_URL, {})
+  .connect(process.env.DB_URL, {
+    dbName: "yayasan-prawitama",
+  })
   .then(() => {
     console.log("DB CONNECTED");
   })
@@ -25,8 +27,8 @@ const departmentRoutes = require("./routes/department");
 const employeeRoutes = require("./routes/employeeRoutes");
 
 app.use("/auth", authRoutes);
-app.use("/department",departmentRoutes);
-app.use("/employee",employeeRoutes);
+app.use("/department", departmentRoutes);
+app.use("/employee", employeeRoutes);
 
 const port = process.env.PORT;
 

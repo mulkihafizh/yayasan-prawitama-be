@@ -12,7 +12,7 @@ const employeeSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true
+      required: true,
     },
     name: {
       type: String,
@@ -120,6 +120,18 @@ const employeeSchema = new mongoose.Schema(
     },
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+    gender: {
+      type: String,
+      enum: ["Laki-laki", "Perempuan"],
+    },
+    religion: {
+      type: String,
+    },
+    days_off: {
+      type: Number,
+      default: 3,
       required: true,
     },
     salt: String,

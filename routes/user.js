@@ -1,15 +1,16 @@
 const express = require("express");
-const { signUp, signIn, signOut } = require("../controllers/userController");
+const {
+  signUp,
+  signIn,
+  signOut,
+  findUser,
+} = require("../controllers/userController");
 const { check } = require("express-validator");
 const router = express.Router();
 
 router.post(
   "/signup",
   [
-    check("username", "Username should be at least 3 char").isLength({
-      min: 3,
-    }),
-    check("email", "Email must be a valid email").isEmail(),
     check("password", "Password should be at least 6 characters").isLength({
       min: 6,
     }),
@@ -20,7 +21,6 @@ router.post(
 router.post(
   "/signin",
   [
-    check("email", "Email must be a valid email").isEmail(),
     check("password", "Password should be at least 6 characters").isLength({
       min: 6,
     }),
@@ -29,4 +29,6 @@ router.post(
 );
 
 router.get("/signout", signOut);
+
+router.get("/employee", findUser);
 module.exports = router;
