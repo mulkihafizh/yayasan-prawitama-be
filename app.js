@@ -16,7 +16,7 @@ mongoose
   })
   .catch((err) => {
     console.log(err);
-  });
+  });
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -25,10 +25,12 @@ app.use(cors());
 const authRoutes = require("./routes/user");
 const departmentRoutes = require("./routes/department");
 const employeeRoutes = require("./routes/employeeRoutes");
+const certificateRoutes = require("./routes/certificate");
 
 app.use("/auth", authRoutes);
-app.use("/department", departmentRoutes);
-app.use("/employee", employeeRoutes);
+app.use("/department",departmentRoutes);
+app.use("/employee",employeeRoutes);
+app.use("/certificate",certificateRoutes);
 
 const port = process.env.PORT;
 
