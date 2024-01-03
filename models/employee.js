@@ -73,6 +73,7 @@ const employeeSchema = new mongoose.Schema(
       type: {
         name: String,
         description: String,
+        salary: Number,
       },
       required: true,
     },
@@ -132,6 +133,11 @@ const employeeSchema = new mongoose.Schema(
     days_off: {
       type: Number,
       default: 3,
+      required: true,
+    },
+    attendance: {
+      type: Number,
+      default: 0,
       required: true,
     },
     salt: String,

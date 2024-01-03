@@ -10,18 +10,18 @@ const {
 } = require("../controllers/departmentController");
 
 // Rute untuk membuat departemen baru
-router.post("/departments", createDepartment);
+router.post("/", createDepartment);
 
 // Rute untuk mendapatkan semua departemen
-router.get("/departments", getAllDepartments);
+router.get("/", getAllDepartments);
 
 // Rute untuk mendapatkan departemen berdasarkan ID
-router.get("/departments/:departmentId", getDepartmentById);
+router.get("/:departmentId", getDepartmentById);
 
 // Rute untuk memperbarui departemen berdasarkan ID
-router.put("/departments/:departmentId", updateDepartment);
+router.put("/:departmentId", updateDepartment);
 
 // Rute untuk menghapus departemen berdasarkan ID
-router.delete("/departments/:departmentId", deleteDepartment);
+router.delete("/:departmentId", deleteDepartment);
 
 module.exports = router;

@@ -6,6 +6,15 @@ const payrollSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
+    status: {
+      type: String,
+      enum: ["pending", "approved"],
+      required: true,
+    },
+    month: {
+      type: Number,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -16,14 +25,33 @@ const payrollSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    allowance_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
+    allowances: {
+      type: [
+        {
+          name: {
+            type: String,
+            required: true,
+          },
+          amount: {
+            type: Number,
+            required: true,
+          },
+        },
+      ],
+      default: [{ name: "BPJS", amount: 1000000 }],
     },
-    insentive: {
-      type: Number,
-      required: true,
-    },
+    insentive: [
+      {
+        name: {
+          type: String,
+          required: true,
+        },
+        amount: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

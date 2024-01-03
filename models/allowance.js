@@ -1,18 +1,22 @@
 const mongoose = require("mongoose");
 
-const allowanceSchema = new mongoose.Schema({
-  allowance_types_id: [
-    {
+const allowanceSchema = new mongoose.Schema(
+  {
+    employee_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "AllowanceType",
+      required: true,
     },
-  ],
-  amounts: [
-    {
+    type: {
+      type: String,
+      required: true,
+    },
+    amount: {
       type: Number,
       required: true,
     },
-  ],
-}, { timestamps: true });
+  },
+
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("Allowance", allowanceSchema);

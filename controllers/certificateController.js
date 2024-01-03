@@ -17,11 +17,28 @@ exports.createCertificate = async (req, res) => {
     });
     const savedCertificate = await newCertificate.save();
 
-    res.status(201).json({ message: "Certificate berhasil dibuat", data: savedCertificate });
+    res
+      .status(201)
+      .json({ message: "Certificate berhasil dibuat", data: savedCertificate });
   } catch (error) {
     console.error("Gagal membuat certificate:", error);
     res.status(500).json({ message: "Gagal membuat certificate" });
   }
+};
+
+exports.getFile = async (req, res) => {
+  try {
+    const certificate = await Certificate.findById(req.params.certificateId);
+    if (!certificate) {
+      return res.status(404).json({ message: "Certificate tidak ditemukan" });
+    }
+
+    const username = req.user.username;
+    const filename = certificate.filename;
+    const path = `public/${username}/certificate/${filename}`;
+
+    res.status(200).sendFile(path);
+  } catch (e) {}
 };
 
 // Mendapatkan semua Certificate

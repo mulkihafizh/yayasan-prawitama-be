@@ -5,6 +5,7 @@ const {
   signOut,
   findUser,
 } = require("../controllers/userController");
+const { checkPayrollAdmin } = require("../middleware/employeeMiddleware");
 const { check } = require("express-validator");
 const router = express.Router();
 
@@ -25,6 +26,7 @@ router.post(
       min: 6,
     }),
   ],
+  checkPayrollAdmin,
   signIn
 );
 
