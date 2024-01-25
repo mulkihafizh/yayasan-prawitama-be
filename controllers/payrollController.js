@@ -12,7 +12,7 @@ export async function getPayroll(req, res) {
 
 export async function getPayrollById(req, res) {
   try {
-    const payroll = await Payroll.$wherefindById(req.params.payrollId);
+    const payroll = await Payroll.findById(req.params.payrollId);
     if (!payroll) {
       return res.status(404).json({ message: "Payroll tidak ditemukan" });
     }
@@ -24,16 +24,18 @@ export async function getPayrollById(req, res) {
   }
 }
 
-export async function getPayrollByUserId(req, res) {
+export async function getPayrollByEmployeeId(req, res) {
   try {
-    const payroll = await find({ employee_id: req.params.userId });
+    const payroll = await Payroll.find({ employee_id: req.params.employeeId });
     if (!payroll) {
+      console.log("bjir");
       return res.status(404).json({ message: "Payroll tidak ditemukan" });
     }
 
-    res.status(200).json({ data: payroll });
+    console.log(payroll);
+    return res.status(200).json({ payroll });
   } catch (error) {
-    console.error("Gagal mendapatkan payroll:", error);
+    console.log("Gagal mendapatkan payroll:", error);
     res.status(500).json({ message: "Gagal mendapatkan payroll" });
   }
 }

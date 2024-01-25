@@ -10,6 +10,7 @@ const payrollSchema = new Schema(
       type: String,
       enum: ["pending", "approved"],
       required: true,
+      default: "pending",
     },
     month: {
       type: Number,
@@ -25,10 +26,14 @@ const payrollSchema = new Schema(
       type: Number,
       required: true,
     },
+    year: {
+      type: Number,
+      required: true,
+    },
     allowances: {
       type: [
         {
-          name: {
+          type: {
             type: String,
             required: true,
           },
@@ -38,20 +43,7 @@ const payrollSchema = new Schema(
           },
         },
       ],
-      default: [{ name: "BPJS", amount: 1000000 }],
     },
-    insentive: [
-      {
-        name: {
-          type: String,
-          required: true,
-        },
-        amount: {
-          type: Number,
-          required: true,
-        },
-      },
-    ],
   },
   { timestamps: true }
 );

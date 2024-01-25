@@ -1,13 +1,16 @@
 import Cuti from "../models/cuti.js";
 import Employee from "../models/employee.js";
+import Allowance from "../models/allowance.js";
+import AllowanceTypes from "../models/allowanceTypes.js";
 import jwt from "jsonwebtoken";
+import allowanceTypes from "../models/allowanceTypes.js";
 
 export async function createCuti(req, res) {
   try {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, process.env.SECRET);
     const employee_id = decoded._id;
-    const { target_id, date, notes, type, department, reason,name } = req.body;
+    const { target_id, date, notes, type, department, reason, name } = req.body;
 
     const prev = await Employee.findOne({ user_id: employee_id });
 
@@ -23,7 +26,7 @@ export async function createCuti(req, res) {
 
     const cuti = new Cuti({
       name: prev.name,
-      employee_id,
+      employee_id: prev._id,
       target_id,
       date,
       notes,
@@ -33,7 +36,7 @@ export async function createCuti(req, res) {
     });
 
     await cuti.save();
-    res.status(201).json({ message: "Berhasil membuat cuti" });
+    return res.status(201).json({ message: "Berhasil membuat cuti" });
   } catch (error) {
     console.log("Gagal membuat cuti:", error);
     return res.status(500).json({ message: "Gagal membuat cuti" });
@@ -55,7 +58,7 @@ export async function getUserCuti(req, res) {
     const userId = req.params.userId;
     const employee = await Employee.findById(userId);
 
-    const cuti = await Cuti.find({ employee_id: employee.user_id });
+    const cuti = await Cuti.find({ employee_id: userId });
 
     res.status(200).json(cuti);
   } catch (error) {
@@ -69,6 +72,27 @@ export async function approveCuti(req, res) {
     const { cutiId } = req.params;
     const { status } = req.body;
     const cutis = await Cuti.findById(cutiId);
+    const allowance = await Allowance.findOne({
+      employee_id: cutis.target_id,
+      type: "Lembur/Cuti",
+    });
+
+    if (!allowance) {
+      const allowances = await AllowanceTypes.findOne({ type: "Lembur/Cuti" });
+
+      await Allowance.create({
+        employee_id: cutis.target_id,
+        type: allowances.type,
+        amount: allowances.amount,
+      });
+    } else if (allowance) {
+      await Allowance.findOneAndUpdate(
+        { employee_id: cutis.target_id, type: "Lembur/Cuti" },
+        {
+          amount: allowance.amount + 1,
+        }
+      );
+    }
 
     const cuti = await Cuti.findByIdAndUpdate(cutiId, {
       status: status,
