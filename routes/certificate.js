@@ -1,35 +1,31 @@
-const express = require("express");
-const router = express.Router();
-const certificateController = require("../controllers/certificateController");
-const upload = require("../lib/multer");
-const fs = require("fs");
+import { Router } from "express";
+const router = Router();
+import {
+  createCertificate,
+  getAllCertificate,
+  getCertificateByID,
+  updateCertificate,
+  deleteCertificate,
+  getUserCertificate,
+} from "../controllers/certificateController.js";
+import upload from "../lib/multer.js";
+import fs from "fs";
 
 // Rute untuk membuat certificate baru
-router.post(
-  "/",
-  upload.single("file"),
-  certificateController.createCertificate
-);
+router.post("/", upload.single("file"), createCertificate);
 
 // Rute untuk mendapatkan semua certificate
-router.get("/", certificateController.getAllCertificate);
+router.get("/", getAllCertificate);
 
 // Rute untuk mendapatkan certificate berdasarkan ID
-router.get(
-  "/:certificateId",
-  certificateController.getCertificateByID
-);
+router.get("/:certificateId", getCertificateByID);
 
 // Rute untuk memperbarui certificate berdasarkan ID
-router.put(
-  "/:certificateId",
-  certificateController.updateCertificate
-);
+router.put("/:certificateId", updateCertificate);
 
 // Rute untuk menghapus certificate berdasarkan ID
-router.delete(
-  "/certificates/:certificateId",
-  certificateController.deleteCertificate
-);
+router.delete("/certificates/:certificateId", deleteCertificate);
 
-module.exports = router;
+router.get("/user/:userId", getUserCertificate);
+
+export default router;

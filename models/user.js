@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const crypto = require("crypto");
+import { Schema, model } from "mongoose";
+const { createHmac, randomBytes } = await import("node:crypto");
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
   {
     username: {
       type: String,
@@ -19,7 +19,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["employee_admin", "payroll_admin"],
+      enum: ["employee_admin", "payroll_admin", "employee"],
+      default: "employee",
     },
     encrypted_password: {
       type: String,
@@ -34,7 +35,7 @@ userSchema
   .virtual("password")
   .set(function (password) {
     this._password = password;
-    this.salt = crypto.randomBytes(16).toString("hex");
+    this.salt = randomBytes(16).toString("hex");
     this.encrypted_password = this.securePassword(password);
   })
   .get(function (password) {
@@ -49,8 +50,7 @@ userSchema.methods = {
   securePassword: function (plainpassword) {
     if (!plainpassword) return "";
     try {
-      return crypto
-        .createHmac("sha256", this.salt)
+      return createHmac("sha256", this.salt)
         .update(plainpassword)
         .digest("hex");
     } catch (err) {
@@ -59,4 +59,4 @@ userSchema.methods = {
   },
 };
 
-module.exports = mongoose.model("User", userSchema);
+export default model("User", userSchema);

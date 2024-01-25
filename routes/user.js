@@ -1,13 +1,13 @@
-const express = require("express");
-const {
+import { Router } from "express";
+import {
   signUp,
   signIn,
   signOut,
   findUser,
-} = require("../controllers/userController");
-const { checkPayrollAdmin } = require("../middleware/employeeMiddleware");
-const { check } = require("express-validator");
-const router = express.Router();
+} from "../controllers/userController.js";
+import { checkPayrollAdmin } from "../middleware/employeeMiddleware.js";
+import { check } from "express-validator";
+const router = Router();
 
 router.post(
   "/signup",
@@ -26,11 +26,11 @@ router.post(
       min: 6,
     }),
   ],
-  checkPayrollAdmin,
+  // checkPayrollAdmin,
   signIn
 );
 
 router.get("/signout", signOut);
 
 router.get("/employee", findUser);
-module.exports = router;
+export default router;

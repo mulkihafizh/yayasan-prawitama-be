@@ -1,18 +1,21 @@
-const mongoose = require("mongoose");
-const express = require("express");
+import { connect } from "mongoose";
+import express from "express";
 const app = express();
-require("dotenv").config();
-const cron = require("cron");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const { approvePayroll, createPayroll } = require("./lib/payrollJob");
-const { generateDepartment } = require("./controllers/departmentController");
+import "dotenv/config";
+import { CronJob } from "cron";
+import bodyParser from "body-parser";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import {
+  approvePayroll,
+  createPayroll,
+  attendanceJob,
+} from "./lib/payrollJob.js";
+import { generateDepartment } from "./controllers/departmentController.js";
 
-mongoose
-  .connect(process.env.DB_URL, {
-    dbName: "yayasan-prawitama",
-  })
+connect(process.env.DB_URL, {
+  dbName: "yayasan-prawitama",
+})
   .then(() => {
     console.log("DB CONNECTED");
   })
@@ -28,18 +31,19 @@ app.get("/", (req, res) => {
   generateDepartment(req, res);
 });
 
-const job = new cron.CronJob("0 0 25 * *", async () => {
+const job = new CronJob("0 0 26 * *", async () => {
   await approvePayroll();
   await createPayroll();
+  await attendanceJob();
 });
 
 job.start();
 
-const authRoutes = require("./routes/user");
-const departmentRoutes = require("./routes/department");
-const employeeRoutes = require("./routes/employeeRoutes");
-const certificateRoutes = require("./routes/certificate");
-const cutiRoutes = require("./routes/cuti");
+import authRoutes from "./routes/user.js";
+import departmentRoutes from "./routes/department.js";
+import employeeRoutes from "./routes/employee.js";
+import certificateRoutes from "./routes/certificate.js";
+import cutiRoutes from "./routes/cuti.js";
 
 app.use("/auth", authRoutes);
 app.use("/department", departmentRoutes);

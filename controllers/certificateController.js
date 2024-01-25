@@ -1,7 +1,10 @@
-const Certificate = require("../models/certificate");
+import Certificate from "../models/certificate.js";
+import path from "path";
+const mime = import("mime");
+import fs from "fs";
 
 // Membuat Certificate baru
-exports.createCertificate = async (req, res) => {
+export async function createCertificate(req, res) {
   try {
     const { name, issued_by, date, employee_id, time } = req.body;
     if (!name || !issued_by || !date || !employee_id || !time) {
@@ -24,9 +27,9 @@ exports.createCertificate = async (req, res) => {
     console.error("Gagal membuat certificate:", error);
     res.status(500).json({ message: "Gagal membuat certificate" });
   }
-};
+}
 
-exports.getFile = async (req, res) => {
+export async function getFile(req, res) {
   try {
     const certificate = await Certificate.findById(req.params.certificateId);
     if (!certificate) {
@@ -39,10 +42,10 @@ exports.getFile = async (req, res) => {
 
     res.status(200).sendFile(path);
   } catch (e) {}
-};
+}
 
 // Mendapatkan semua Certificate
-exports.getAllCertificate = async (req, res) => {
+export async function getAllCertificate(req, res) {
   try {
     const certificate = await Certificate.find();
     res.status(200).json({ data: certificate });
@@ -50,10 +53,10 @@ exports.getAllCertificate = async (req, res) => {
     console.error("Gagal mendapatkan certificate:", error);
     res.status(500).json({ message: "Gagal mendapatkan certificate" });
   }
-};
+}
 
 // Mendapatkan Certificate berdasarkan ID
-exports.getCertificateByID = async (req, res) => {
+export async function getCertificateByID(req, res) {
   try {
     const certificate = await Certificate.findById(req.params.certificateId);
     if (!certificate) {
@@ -65,10 +68,10 @@ exports.getCertificateByID = async (req, res) => {
     console.error("Gagal mendapatkan certificate:", error);
     res.status(500).json({ message: "Gagal mendapatkan certificate" });
   }
-};
+}
 
 // Memperbarui Certificate berdasarkan ID
-exports.updateCertificate = async (req, res) => {
+export async function updateCertificate(req, res) {
   try {
     const { name, issued_by, date, employee_id, time } = req.body;
     if (!name || !issued_by || !date || !employee_id || !time) {
@@ -87,10 +90,10 @@ exports.updateCertificate = async (req, res) => {
     console.error("Gagal memperbarui certificate:", error);
     res.status(500).json({ message: "Gagal memperbarui certificate" });
   }
-};
+}
 
 // Menghapus Certificate berdasarkan ID
-exports.deleteCertificate = async (req, res) => {
+export async function deleteCertificate(req, res) {
   try {
     const certificate = await Certificate.findByIdAndRemove(
       req.params.certificateId
@@ -104,4 +107,15 @@ exports.deleteCertificate = async (req, res) => {
     console.error("Gagal menghapus certificate:", error);
     res.status(500).json({ message: "Gagal menghapus certificate" });
   }
-};
+}
+
+export async function getUserCertificate(req, res) {
+  try {
+    const certificate = await Certificate.find({
+      employee_id: req.params.userId,
+    });
+    res.status(200).json({ data: certificate });
+  } catch (e) {
+    res.status(500).json({ message: "Gagal mendapatkan certificate" });
+  }
+}

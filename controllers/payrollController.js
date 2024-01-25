@@ -1,6 +1,6 @@
-const Payroll = require("../models/payroll.js");
+import Payroll from "../models/payroll.js";
 
-exports.getPayroll = async (req, res) => {
+export async function getPayroll(req, res) {
   try {
     const payroll = await Payroll.find();
     res.status(200).json({ data: payroll });
@@ -8,11 +8,11 @@ exports.getPayroll = async (req, res) => {
     console.error("Gagal mendapatkan payroll:", error);
     res.status(500).json({ message: "Gagal mendapatkan payroll" });
   }
-};
+}
 
-exports.getPayrollById = async (req, res) => {
+export async function getPayrollById(req, res) {
   try {
-    const payroll = await Payroll.findById(req.params.payrollId);
+    const payroll = await Payroll.$wherefindById(req.params.payrollId);
     if (!payroll) {
       return res.status(404).json({ message: "Payroll tidak ditemukan" });
     }
@@ -22,11 +22,11 @@ exports.getPayrollById = async (req, res) => {
     console.error("Gagal mendapatkan payroll:", error);
     res.status(500).json({ message: "Gagal mendapatkan payroll" });
   }
-};
+}
 
-exports.getPayrollByUserId = async (req, res) => {
+export async function getPayrollByUserId(req, res) {
   try {
-    const payroll = await Payroll.find({ employee_id: req.params.userId });
+    const payroll = await find({ employee_id: req.params.userId });
     if (!payroll) {
       return res.status(404).json({ message: "Payroll tidak ditemukan" });
     }
@@ -36,9 +36,9 @@ exports.getPayrollByUserId = async (req, res) => {
     console.error("Gagal mendapatkan payroll:", error);
     res.status(500).json({ message: "Gagal mendapatkan payroll" });
   }
-};
+}
 
-exports.updatePayroll = async (req, res) => {
+export async function updatePayroll(req, res) {
   try {
     const { status } = req.body;
     if (!status) {
@@ -59,4 +59,4 @@ exports.updatePayroll = async (req, res) => {
     console.error("Gagal memperbarui payroll:", error);
     res.status(500).json({ message: "Gagal memperbarui payroll" });
   }
-};
+}

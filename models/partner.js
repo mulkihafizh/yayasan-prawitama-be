@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const partnerSchema = new mongoose.Schema({
+const partnerSchema = new Schema({
   employee_id: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     required: true,
   },
   name: {
@@ -25,4 +25,4 @@ const partnerSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
-module.exports = mongoose.model("Partner", partnerSchema);
+export default model("Partner", partnerSchema);

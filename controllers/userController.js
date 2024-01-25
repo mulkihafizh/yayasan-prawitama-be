@@ -1,9 +1,9 @@
-const User = require("../models/user");
-const Employee = require("../models/employee");
-const { validationResult } = require("express-validator");
-const jwt = require("jsonwebtoken");
+import User from "../models/user.js";
+import Employee from "../models/employee.js";
+import { validationResult } from "express-validator";
+import jwt from "jsonwebtoken";
 
-exports.signUp = async (req, res) => {
+export async function signUp(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ error: errors.array()[0].msg });
@@ -11,13 +11,13 @@ exports.signUp = async (req, res) => {
 
   try {
     const newUser = new User(req.body);
-    const username = await User.findOne({ username: newUser.username });
+    const username = await findOne({ username: newUser.username });
 
     if (username) {
       return res.status(400).json({ error: "Username already exists" });
     }
 
-    const email = await User.findOne({ email: newUser.email });
+    const email = await findOne({ email: newUser.email });
     if (email) {
       return res.status(400).json({ error: "Email already exists" });
     }
@@ -27,9 +27,9 @@ exports.signUp = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: `An error occurred:${error}` });
   }
-};
+}
 
-exports.createEmployee = async (data) => {
+export async function createEmployee(data) {
   try {
     const newUser = new User({
       username: data.name,
@@ -51,14 +51,14 @@ exports.createEmployee = async (data) => {
       error: `An error occurred:${error}`,
     };
   }
-};
+}
 
-exports.signIn = async (req, res) => {
+export async function signIn(req, res) {
   const { email, password } = req.body;
 
   try {
-    console.log(email, password);
     const user = await User.findOne({ email });
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -89,11 +89,11 @@ exports.signIn = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
-};
+}
 
-exports.signOut = (req, res) => {
+export function signOut(req, res) {
   try {
     res.clearCookie("token");
     return res.json({
@@ -102,13 +102,13 @@ exports.signOut = (req, res) => {
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });
   }
-};
+}
 
-exports.findUser = async (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
-  const decoded = jwt.verify(token, process.env.SECRET);
-  const userId = decoded._id;
+export async function findUser(req, res) {
   try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.SECRET);
+    const userId = decoded._id;
     const employee = await Employee.findOne({ user_id: userId });
 
     if (!employee) {
@@ -119,6 +119,7 @@ exports.findUser = async (req, res) => {
       employee,
     });
   } catch (e) {
-    return res.status(500).json({ message: "Internal server error" });
+    console.log(e);
+    return res.status(500).json({ message: "Internal server error", e });
   }
-};
+}

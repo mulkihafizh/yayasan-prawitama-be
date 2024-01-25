@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const childrenSchema = new mongoose.Schema(
+const childrenSchema = new Schema(
   {
     employee_id: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
     },
     name: {
@@ -29,4 +29,4 @@ const childrenSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Children", childrenSchema);
+export default model("Children", childrenSchema);

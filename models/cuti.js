@@ -1,13 +1,17 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const cutiSchema = new mongoose.Schema(
+const cutiSchema = new Schema(
   {
     employee_id: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
     },
     target_id: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
+      required: true,
+    },
+    name:{
+      type: String,
       required: true,
     },
     date: {
@@ -26,6 +30,7 @@ const cutiSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
+      default: "Menunggu",
       enum: ["Menunggu", "Diterima", "Ditolak", "Disetujui Admin"],
     },
     department: {
@@ -40,4 +45,4 @@ const cutiSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Cuti", cutiSchema);
+export default model("Cuti", cutiSchema);

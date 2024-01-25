@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const payrollSchema = new mongoose.Schema(
+const payrollSchema = new Schema(
   {
     employee_id: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
     },
     status: {
@@ -56,4 +56,4 @@ const payrollSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Payroll", payrollSchema);
+export default model("Payroll", payrollSchema);

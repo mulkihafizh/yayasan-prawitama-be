@@ -1,15 +1,24 @@
-const express = require("express");
-const router = express.Router();
-const cutiController = require("../controllers/cutiController");
+import { Router } from "express";
+const router = Router();
+import {
+  createCuti,
+  getCuti,
+  getCutiByID,
+  approveCuti,
+  rejectCuti,
+  deleteCuti,
+  getTargetCuti,
+  approveCutiAdmin,
+  getUserCuti,
+} from "../controllers/cutiController.js";
 
-router.post("/", cutiController.createCuti);
-router.get("/", cutiController.getCuti);
-router.get("/:cutiId", cutiController.getCutiByID);
-router.post("/approve/:cutiId", cutiController.approveCuti);
-router.post("/reject/:cutiId", cutiController.rejectCuti);
-router.delete("/:cutiId", cutiController.deleteCuti);
-router.post("/target/:id", cutiController.getTargetCuti);
-router.post("/approve/admin/:cutiId", cutiController.approveCutiAdmin);
-router
+router.post("/", createCuti);
+router.get("/", getCuti);
+router.get("/:cutiId", getCutiByID);
+router.post("/approve/:cutiId", approveCuti);
+router.delete("/:cutiId", deleteCuti);
+router.get("/target/:id", getTargetCuti);
+router.post("/approve/admin/:cutiId", approveCutiAdmin);
+router.get("/user/:userId", getUserCuti);
 
-module.exports = router;
+export default router;

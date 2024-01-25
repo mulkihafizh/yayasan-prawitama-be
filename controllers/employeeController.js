@@ -1,11 +1,12 @@
-const Employee = require("../models/employee.js");
-const Partner = require("../models/partner.js");
-const Children = require("../models/children.js");
-const User = require("../models/user.js");
-const Payroll = require("../models/payroll.js");
-const Department = require("../models/department.js");
+import Employee from "../models/employee.js";
+import Partner from "../models/partner.js";
+import Children from "../models/children.js";
+import User from "../models/user.js";
+import Payroll from "../models/payroll.js";
+import Department from "../models/department.js";
+import jwt from "jsonwebtoken";
 
-exports.createEmployee = async (req, res) => {
+export async function createEmployee(req, res) {
   try {
     const {
       email,
@@ -62,10 +63,7 @@ exports.createEmployee = async (req, res) => {
       password,
     });
 
-    const departmentData = Department.findOne({
-      name: department.name,
-      description: department.description,
-    });
+    const departmentData = await Department.findById(department);
 
     const user = await User.findOne({ email });
 
@@ -97,27 +95,6 @@ exports.createEmployee = async (req, res) => {
       children: children.length,
     });
 
-    // if (is_married) {
-    //   // Jika karyawan menikah, tambahkan data partner (mitra)
-    //   const partner = {
-    //     name: partner.name,
-    //     birth_date: partner.birth_date,
-    //     job: partner.job,
-    //   };
-
-    //   // Jika memiliki anak, tambahkan data anak karyawan
-    //   const children = children.map((child) => ({
-    //     name: child.name,
-    //     birth_date: child.birth_date,
-    //     birth_place: child.birth_place,
-    //   }));
-    //   partner = new Partner(partner);
-    //   partner = await partner.save();
-
-    //   children = new Children(children);
-    //   children = await children.save();
-    // }
-
     const savedUser = await createUser.save();
     const savedEmployee = await newEmployee.save();
 
@@ -131,12 +108,12 @@ exports.createEmployee = async (req, res) => {
       return res.status(404).json({ message: "User tidak ditemukan" });
     }
     user.save();
-    return res.status(500).json({ message: "Gagal" });
+    return res.status(500).json({ message: "Gagal", error: error });
   }
-};
+}
 
 // Mendapatkan semua data karyawan
-exports.getAllEmployees = async (req, res) => {
+export async function getAllEmployees(req, res) {
   try {
     const employees = await Employee.find();
     res.status(200).json({ data: employees });
@@ -144,10 +121,10 @@ exports.getAllEmployees = async (req, res) => {
     console.error("Gagal mendapatkan data karyawan:", error);
     res.status(500).json({ message: "Gagal mendapatkan data karyawan" });
   }
-};
+}
 
 // Mendapatkan karyawan berdasarkan ID
-exports.getEmployeeById = async (req, res) => {
+export async function getEmployeeById(req, res) {
   try {
     const employee = await Employee.findById(req.params.employeeId);
     if (!employee) {
@@ -161,10 +138,10 @@ exports.getEmployeeById = async (req, res) => {
     console.error("Gagal mendapatkan data karyawan:", error);
     res.status(500).json({ message: "Gagal mendapatkan data karyawan" });
   }
-};
+}
 
 // Memperbarui karyawan berdasarkan ID
-exports.updateEmployee = async (req, res) => {
+export async function updateEmployee(req, res) {
   try {
     const {
       email,
@@ -258,10 +235,10 @@ exports.updateEmployee = async (req, res) => {
     console.error("Gagal memperbarui data karyawan:", error);
     res.status(500).json({ message: "Gagal memperbarui data karyawan" });
   }
-};
+}
 
 // Menghapus karyawan berdasarkan ID
-exports.deleteEmployee = async (req, res) => {
+export async function deleteEmployee(req, res) {
   try {
     const employee = await Employee.findById(req.params.employeeId);
     if (!employee) {
@@ -278,4 +255,53 @@ exports.deleteEmployee = async (req, res) => {
     console.error("Gagal menghapus data karyawan:", error);
     return res.status(500).json({ message: "Gagal menghapus data karyawan" });
   }
-};
+}
+
+export async function getEmployees(req, res) {
+  try {
+    let employeeData = [];
+    const token = req.headers.authorization.split(" ")[1];
+    const userId = jwt.verify(token, process.env.SECRET)._id;
+    const user = await User.find();
+    for (let i = 0; i < user.length; i++) {
+      const employee = await Employee.findOne({ user_id: user[i]._id });
+      if (employee) {
+        if (employee.user_id != userId) {
+          employeeData.push(employee);
+        }
+      }
+    }
+
+    res.status(200).json({ data: employeeData });
+  } catch (error) {
+    console.error("Gagal mendapatkan data karyawan:", error);
+    res.status(500).json({ message: "Gagal mendapatkan data karyawan" });
+  }
+}
+
+export async function attendance(req, res) {
+  try {
+    const employeeId = req.body.id;
+
+    const employee = await Employee.findById(employeeId);
+    if (!employee) {
+      return res.status(404).json({ message: "Karyawan tidak ditemukan" });
+    }
+
+    const attendance = {
+      last: new Date(
+        Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })
+      ),
+      total: employee.attendance.total + 1,
+    };
+
+    employee.attendance = attendance;
+
+    await employee.save();
+
+    return res.status(200).json({ message: "Berhasil", data: employee });
+  } catch (error) {
+    console.error("Gagal mengisi absensi:", error);
+    return res.status(500).json({ message: "Gagal mengisi absensi" });
+  }
+}

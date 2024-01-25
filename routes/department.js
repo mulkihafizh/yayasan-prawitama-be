@@ -1,13 +1,12 @@
-const express = require("express");
-const router = express.Router();
-const {
+import { Router } from "express";
+const router = Router();
+import {
   createDepartment,
   getAllDepartments,
   getDepartmentById,
   deleteDepartment,
   updateDepartment,
-  ceateDepartment,
-} = require("../controllers/departmentController");
+} from "../controllers/departmentController.js";
 
 // Rute untuk membuat departemen baru
 router.post("/", createDepartment);
@@ -24,4 +23,4 @@ router.put("/:departmentId", updateDepartment);
 // Rute untuk menghapus departemen berdasarkan ID
 router.delete("/:departmentId", deleteDepartment);
 
-module.exports = router;
+export default router;

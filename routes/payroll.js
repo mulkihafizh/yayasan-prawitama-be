@@ -1,8 +1,15 @@
-const express = require("express");
-const router = express.Router();
-const payrollController = require("../controllers/payrollController");
+import { Router } from "express";
+const router = Router();
+import {
+  getPayroll,
+  getPayrollById,
+  updatePayroll,
+  getPayrollByEmployeeId,
+} from "../controllers/payrollController.js";
 
-router.get("/", payrollController.getPayroll);
-router.get("/:payrollId", payrollController.getPayrollById);
-router.put("/:payrollId", payrollController.updatePayroll);
-router.get("/employee/:employeeId", payrollController.getPayrollByEmployeeId);
+router.get("/", getPayroll);
+router.get("/:payrollId", getPayrollById);
+router.put("/:payrollId", updatePayroll);
+router.get("/employee/:employeeId", getPayrollByEmployeeId);
+
+export default router;

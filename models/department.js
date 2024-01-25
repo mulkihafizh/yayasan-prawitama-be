@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const departmentSchema = new mongoose.Schema(
+const departmentSchema = new Schema(
   {
     name: {
       type: String,
@@ -17,10 +17,10 @@ const departmentSchema = new mongoose.Schema(
     salary: {
       type: Number,
       required: true,
-      default: 3500000,
+      default: 150000,
     },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Department", departmentSchema);
+export default model("Department", departmentSchema);

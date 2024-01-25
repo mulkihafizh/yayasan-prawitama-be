@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const crypto = require("crypto");
+import { Schema, model } from "mongoose";
+import { createHmac } from "crypto";
 
-const employeeSchema = new mongoose.Schema(
+const employeeSchema = new Schema(
   {
     email: {
       type: String,
@@ -72,7 +72,7 @@ const employeeSchema = new mongoose.Schema(
     department: {
       type: {
         name: String,
-        description: String,
+        details: String,
         salary: Number,
       },
       required: true,
@@ -118,9 +118,10 @@ const employeeSchema = new mongoose.Schema(
     children: {
       type: Number,
       required: true,
+      default: 0,
     },
     user_id: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
     },
     gender: {
@@ -129,6 +130,7 @@ const employeeSchema = new mongoose.Schema(
     },
     religion: {
       type: String,
+      enum: ["Islam", "Kristen", "Katolik", "Hindu", "Buddha", "Konghucu"],
     },
     days_off: {
       type: Number,
@@ -136,9 +138,14 @@ const employeeSchema = new mongoose.Schema(
       required: true,
     },
     attendance: {
-      type: Number,
-      default: 0,
-      required: true,
+      type: {
+        last: Date,
+        total: Number,
+      },
+      default: {
+        last: new Date(),
+        total: 1,
+      },
     },
     salt: String,
   },
@@ -153,8 +160,7 @@ employeeSchema.methods = {
   securePassword: function (plainpassword) {
     if (!plainpassword) return "";
     try {
-      return crypto
-        .createHmac("sha256", this.salt)
+      return createHmac("sha256", this.salt)
         .update(plainpassword)
         .digest("hex");
     } catch (err) {
@@ -162,4 +168,4 @@ employeeSchema.methods = {
     }
   },
 };
-module.exports = mongoose.model("Employee", employeeSchema);
+export default model("Employee", employeeSchema);
